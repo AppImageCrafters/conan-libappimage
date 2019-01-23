@@ -1,6 +1,10 @@
 language: cpp
 compiler:
   - gcc
+
+notifications:
+  email: false
+
 install:
   # Upgrade GCC
   - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
