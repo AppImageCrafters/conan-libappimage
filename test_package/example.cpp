@@ -1,6 +1,6 @@
 #include <iostream>
-#include "appimage/appimage.h"
+#include <appimage/appimage.h>
 
 int main() {
-    std::cout << appimage_get_md5("/test") << std::endl;
+    std::cout << appimage_get_md5("askdlasdkj ") << std::endl;
 }
