@@ -3,7 +3,7 @@ from conans import ConanFile, CMake, tools
 
 class LibappimageConan(ConanFile):
     name = "libappimage"
-    version = "0.1"
+    version = "0.1.8"
     license = "[LICENSE]"
     author = "Alexis Lopez Zubieta <contact@azubieta.net>"
     url = "https://github.com/azubieta/conan-libappimage"
