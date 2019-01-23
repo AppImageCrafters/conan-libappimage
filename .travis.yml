@@ -15,6 +15,6 @@ install:
 
 script:
   # Download dependencies, build, test and create package
-  - conan create . libappimage/testing
+  - conan create . azubieta/testing
   - conan remote add bintray_repo https://api.bintray.com/conan/azubieta/AppImage
-  - conan upload libappimage/0.1.8@libappimage/testing --all -r=bintray_repo
+  - conan upload libappimage/0.1.8@azubieta/testing --all -r=bintray_repo
