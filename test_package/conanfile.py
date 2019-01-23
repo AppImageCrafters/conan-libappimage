@@ -15,7 +15,8 @@ class LibappimageTestConan(ConanFile):
         cmake.build()
 
     def imports(self):
-        self.copy("*.a*", dst="bin", src="lib")
+        self.copy("*.dll", dst="bin", src="bin")
+        self.copy("*.dylib*", dst="bin", src="lib")
         self.copy('*.so*', dst='bin', src='lib')
 
     def test(self):

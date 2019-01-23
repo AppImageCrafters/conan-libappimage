@@ -1,8 +1,9 @@
-from conans import ConanFile, CMake
+from conans import ConanFile, CMake, tools
+
 
 class LibappimageConan(ConanFile):
     name = "libappimage"
-    version = "0.1.8"
+    version = "0.1"
     license = "[LICENSE]"
     author = "Alexis Lopez Zubieta <contact@azubieta.net>"
     url = "https://github.com/azubieta/conan-libappimage"
@@ -12,7 +13,6 @@ class LibappimageConan(ConanFile):
     options = {"shared": [True, False]}
     default_options = "shared=False"
     generators = "cmake"
-    exports_sources = "libappimage/*"
 
     def source(self):
         self.run("git clone https://github.com/AppImage/libappimage.git")
@@ -26,11 +26,12 @@ class LibappimageConan(ConanFile):
     def package(self):
         self.copy("*.h", dst="include", src="libappimage/include")
         self.copy("*.a", dst="lib", keep_path=False)
+        self.copy("*.so*", dst="lib", keep_path=False)
 
     def package_info(self):
         common_libs = ["appimage_shared", "xdg-basedir", "glib-2.0", "gio-2.0", "gobject-2.0", "archive", "z",
                        "squashfuse", "lzma", "cairo"]
         if (self.options["shared"]):
-            self.cpp_info.libs = ["appimage"]
+            self.cpp_info.libs = ["appimage"] + common_libs
         else:
-            self.cpp_info.libs = ["appimage_static"]
+            self.cpp_info.libs = ["appimage_static"] + common_libs
