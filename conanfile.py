@@ -18,9 +18,9 @@ class LibappimageConan(ConanFile):
     exports_sources = "patches/*"
 
     def requirements(self):
-        self.requires("squashfuse/0.1.103@azubieta/testing")
+        self.requires("squashfuse/0.1.103@azubieta/stable")
         self.requires("cairo/1.15.14@bincrafters/stable")
-        self.requires("libarchive/3.3.3@azubieta/testing")
+        self.requires("libarchive/3.3.3@azubieta/stable")
 
     def configure(self):
         self.options["squashfuse"].shared = False
