@@ -18,15 +18,18 @@ class LibappimageConan(ConanFile):
     exports_sources = "patches/*"
 
     def requirements(self):
-        self.requires("cairo/1.15.14@bincrafters/stable")
         self.requires("squashfuse/0.1.103@azubieta/stable")
         self.requires("libarchive/3.3.3@azubieta/stable")
-        self.requires("glib/2.57.1@bincrafters/stable", private=False)
+        self.requires("cairo/1.15.14@bincrafters/stable")
+        self.requires("glib/2.57.1@bincrafters/stable")
+        self.requires("zlib/1.2.11@conan/stable")
 
     def configure(self):
-        self.options["glib"].shared = True
         self.options["squashfuse"].shared = False
         self.options["libarchive"].shared = False
+        self.options["cairo"].shared = True
+        self.options["glib"].shared = True
+        self.options["zlib"].shared = True
 
     def source(self):
         self.run("git clone https://github.com/AppImage/libappimage.git")
@@ -41,8 +44,10 @@ class LibappimageConan(ConanFile):
 
     def package(self):
         self.copy("*.h", dst="include", src="libappimage/include")
-        self.copy("*.a", dst="lib", keep_path=False)
-        self.copy("*.so*", dst="lib", keep_path=False)
+        if (self.options["shared"]):
+            self.copy("*.so*", dst="lib", keep_path=False)
+        else:
+            self.copy("*.a", dst="lib", keep_path=False)
 
     def package_info(self):
         common_libs = ["appimage_shared", "xdg-basedir"]
