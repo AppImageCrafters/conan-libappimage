@@ -5,7 +5,7 @@ if __name__ == "__main__":
         "conan remote add appimage https://api.bintray.com/conan/azubieta/AppImage &&" \
         "conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan &&" \
         "sudo apt-get -qq update && " \
-        "sudo apt-get -qq install -y desktop-file-utils libffi-dev libffi-dev:i386 xxd"
+        "sudo apt-get -qq install -m -y desktop-file-utils libffi-dev libffi-dev:i386 xxd"
 
     builder = ConanMultiPackager(docker_entry_script=docker_entry_script)
     builder.add_common_builds(shared_option_name="libappimage:shared")
