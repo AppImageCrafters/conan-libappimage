@@ -18,11 +18,13 @@ class LibappimageConan(ConanFile):
     exports_sources = "patches/*"
 
     def requirements(self):
-        self.requires("squashfuse/0.1.103@azubieta/stable")
         self.requires("cairo/1.15.14@bincrafters/stable")
+        self.requires("squashfuse/0.1.103@azubieta/stable")
         self.requires("libarchive/3.3.3@azubieta/stable")
+        self.requires("glib/2.57.1@bincrafters/stable", private=False)
 
     def configure(self):
+        self.options["glib"].shared = True
         self.options["squashfuse"].shared = False
         self.options["libarchive"].shared = False
 
@@ -43,8 +45,8 @@ class LibappimageConan(ConanFile):
         self.copy("*.so*", dst="lib", keep_path=False)
 
     def package_info(self):
-        common_libs = ["appimage_shared", "xdg-basedir", "glib-2.0", "gio-2.0", "gobject-2.0", "z", "lzma", "cairo"]
+        common_libs = ["appimage_shared", "xdg-basedir"]
         if (self.options["shared"]):
             self.cpp_info.libs = ["appimage"] + common_libs
         else:
-            self.cpp_info.libs = ["appimage_static"] + common_libs
+            self.cpp_info.libs = ["appimage_static"] + common_libs 
