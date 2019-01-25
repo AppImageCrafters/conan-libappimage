@@ -49,4 +49,4 @@ class LibappimageConan(ConanFile):
         if (self.options["shared"]):
             self.cpp_info.libs = ["appimage"] + common_libs
         else:
-            self.cpp_info.libs = ["appimage_static"] + common_libs 
+            self.cpp_info.libs = ["appimage_static"] + common_libs
