@@ -1,187 +1,135 @@
-Index: lib/CMakeLists.txt
+Index: tests/libappimage/desktop_integration/CMakeLists.txt
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- lib/CMakeLists.txt	(date 1548079082000)
-+++ lib/CMakeLists.txt	(date 1548357019000)
-@@ -2,12 +2,12 @@
- 
- include(CTest)
- 
--if(BUILD_TESTING)
--    if(NOT TARGET gtest)
--        if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/gtest)
--            add_subdirectory(gtest EXCLUDE_FROM_ALL)
--        else()
--            message(FATAL_ERROR "gtest submodule not found; please call git submodule update --init or disable the unit tests using -DBUILD_TESTING=OFF")
--        endif()
--    endif()
--endif()
-+#if(BUILD_TESTING)
-+#    if(NOT TARGET gtest)
-+#        if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/gtest)
-+#            add_subdirectory(gtest EXCLUDE_FROM_ALL)
-+#        else()
-+#            message(FATAL_ERROR "gtest submodule not found; please call git submodule update --init or disable the unit tests using -DBUILD_TESTING=OFF")
-+#        endif()
-+#    endif()
-+#endif()
-Index: src/libappimage/CMakeLists.txt
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- src/libappimage/CMakeLists.txt	(date 1548079082000)
-+++ src/libappimage/CMakeLists.txt	(date 1548378132000)
-@@ -37,19 +37,17 @@
-     )
- 
-     target_link_libraries(${target}
--        PRIVATE libarchive
-+        PRIVATE CONAN_PKG::libarchive
-         PRIVATE xdg-basedir
-         # not linking publicly to squashfuse as headers are not needed when using libappimage
-         # unit tests etc., which use squashfuse directly, must link to it explicitly
--        PRIVATE libsquashfuse
--        PRIVATE xz
-+        PRIVATE CONAN_PKG::squashfuse
-+        PRIVATE CONAN_PKG::lzma
-         PUBLIC libappimage_shared
-         PUBLIC pthread
--        PUBLIC libglib
--        PUBLIC libgobject
--        PUBLIC libgio
--        PUBLIC libzlib
--        PUBLIC libcairo
-+        PUBLIC CONAN_PKG::glib
-+        PUBLIC CONAN_PKG::zlib
-+        PUBLIC CONAN_PKG::cairo
-     )
- 
-     set_property(TARGET libappimage PROPERTY PUBLIC_HEADER ${libappimage_public_header})
-Index: cmake/imported_dependencies.cmake
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- cmake/imported_dependencies.cmake	(date 1548079082000)
-+++ cmake/imported_dependencies.cmake	(date 1548380144000)
-@@ -3,8 +3,8 @@
- # the names of the targets need to differ from the library filenames
- # this is especially an issue with libcairo, where the library is called libcairo
- # therefore, all libs imported this way have been prefixed with lib
--import_pkgconfig_target(TARGET_NAME libglib PKGCONFIG_TARGET glib-2.0>=2.40)
--import_pkgconfig_target(TARGET_NAME libgobject PKGCONFIG_TARGET gobject-2.0>=2.40)
--import_pkgconfig_target(TARGET_NAME libgio PKGCONFIG_TARGET gio-2.0>=2.40)
--import_pkgconfig_target(TARGET_NAME libzlib PKGCONFIG_TARGET zlib)
--import_pkgconfig_target(TARGET_NAME libcairo PKGCONFIG_TARGET cairo)
-+#import_pkgconfig_target(TARGET_NAME libglib PKGCONFIG_TARGET glib-2.0>=2.40)
-+#import_pkgconfig_target(TARGET_NAME libgobject PKGCONFIG_TARGET gobject-2.0>=2.40)
-+#import_pkgconfig_target(TARGET_NAME libgio PKGCONFIG_TARGET gio-2.0>=2.40)
-+#import_pkgconfig_target(TARGET_NAME libzlib PKGCONFIG_TARGET zlib)
-+#import_pkgconfig_target(TARGET_NAME libcairo PKGCONFIG_TARGET cairo)
-Index: CMakeLists.txt
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- CMakeLists.txt	(date 1548079082000)
-+++ CMakeLists.txt	(date 1548355549000)
-@@ -12,6 +12,10 @@
- set(V_MINOR 1)
- set(V_PATCH 8)
- 
-+# Use conan
-+include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-+conan_basic_setup(TARGETS)
+--- tests/libappimage/desktop_integration/CMakeLists.txt	(revision 24302b2fbaa12217eb349de78069cebb4cd3857f)
++++ tests/libappimage/desktop_integration/CMakeLists.txt	(date 1556491724000)
+@@ -38,8 +38,11 @@
+     # statically once glib is loaded.
+     PRIVATE libglib
+     PUBLIC dl
+-    PRIVATE gtest
+-    PRIVATE gtest_main
++    PRIVATE GTest::GTest
++    PRIVATE GTest::Main
+ )
 +
- include(cmake/tools.cmake)
- include(cmake/dependencies.cmake)
++get_target_property(GTEST_PROP GTest::GTest INTERFACE_LINK_LIBRARIES)
++MESSAGE("GTEST_PROP  ${GTEST_PROP}")
  
+ add_test(TestDesktopIntegration TestDesktopIntegration)
+Index: tests/libappimage/legacy/CMakeLists.txt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- tests/libappimage/legacy/CMakeLists.txt	(revision 24302b2fbaa12217eb349de78069cebb4cd3857f)
++++ tests/libappimage/legacy/CMakeLists.txt	(date 1556491724000)
+@@ -1,12 +1,12 @@
+ add_library(fixtures INTERFACE)
+ target_sources(fixtures INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/fixtures.h)
+-set_property(TARGET fixtures PROPERTY INTERFACE_LINK_LIBRARIES xdg-basedir gtest)
++set_property(TARGET fixtures PROPERTY INTERFACE_LINK_LIBRARIES xdg-basedir GTest::GTest)
+ 
+ add_executable(test_libappimage test_libappimage.cpp)
+ if(LIBAPPIMAGE_THUMBNAILER_ENABLED)
+     target_compile_definitions(test_libappimage PRIVATE -DLIBAPPIMAGE_THUMBNAILER_ENABLED)
+ endif()
+-target_link_libraries(test_libappimage fixtures libappimage libsquashfuse libglib libgobject gtest gtest_main)
++target_link_libraries(test_libappimage fixtures libappimage libsquashfuse libglib libgobject GTest::GTest GTest::Main)
+ add_test(test_libappimage test_libappimage)
+ 
+ add_executable(test_shared test_shared.cpp)
 Index: tests/CMakeLists.txt
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- tests/CMakeLists.txt	(date 1548079082000)
-+++ tests/CMakeLists.txt	(date 1548369802000)
-@@ -14,10 +14,10 @@
+--- tests/CMakeLists.txt	(revision 24302b2fbaa12217eb349de78069cebb4cd3857f)
++++ tests/CMakeLists.txt	(date 1556491724000)
+@@ -3,6 +3,9 @@
+ if(BUILD_TESTING)
+     cmake_minimum_required(VERSION 3.5)
  
-     add_library(fixtures INTERFACE)
-     target_sources(fixtures INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/fixtures.h)
--    set_property(TARGET fixtures PROPERTY INTERFACE_LINK_LIBRARIES xdg-basedir gtest)
-+    set_property(TARGET fixtures PROPERTY INTERFACE_LINK_LIBRARIES xdg-basedir CONAN_PKG::gtest)
- 
-     add_executable(test_libappimage test_libappimage.cpp)
--    target_link_libraries(test_libappimage fixtures libappimage libsquashfuse)
-+    target_link_libraries(test_libappimage fixtures libappimage CONAN_PKG::squashfuse)
-     add_test(test_libappimage test_libappimage)
- 
-     add_executable(test_shared test_shared.cpp)
-@@ -32,6 +32,6 @@
- 
-     add_executable(test_desktop_integration test_desktop_integration.cpp file_management_utils.hpp)
-     target_include_directories(test_desktop_integration PRIVATE "${PROJECT_SOURCE_DIR}/src/libappimage")
--    target_link_libraries(test_desktop_integration libappimage libappimage_shared libsquashfuse gtest gtest_main)
-+    target_link_libraries(test_desktop_integration libappimage libappimage_shared CONAN_PKG::squashfuse CONAN_PKG::gtest)
-     add_test(test_desktop_integration test_desktop_integration)
- endif()
++    if(USE_CONAN)
++        find_package(GTest REQUIRED)
++    endif()
+     # global definitions
+     add_definitions(
+         -DTEST_DATA_DIR="${CMAKE_CURRENT_SOURCE_DIR}/data/"
 Index: cmake/dependencies.cmake
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- cmake/dependencies.cmake	(date 1548079082000)
-+++ cmake/dependencies.cmake	(date 1548356871000)
-@@ -46,7 +46,7 @@
- else()
-     message(STATUS "Using system xz")
+--- cmake/dependencies.cmake	(revision 24302b2fbaa12217eb349de78069cebb4cd3857f)
++++ cmake/dependencies.cmake	(date 1556491724000)
+@@ -6,6 +6,11 @@
+ # imported dependencies
+ include(${CMAKE_CURRENT_LIST_DIR}/imported_dependencies.cmake)
  
--    import_pkgconfig_target(TARGET_NAME xz PKGCONFIG_TARGET liblzma)
-+    # import_pkgconfig_target(TARGET_NAME xz PKGCONFIG_TARGET liblzma)
- endif()
- 
- 
-@@ -93,7 +93,7 @@
- else()
-     message(STATUS "Using system squashfuse")
- 
--    import_pkgconfig_target(TARGET_NAME libsquashfuse PKGCONFIG_TARGET squashfuse)
-+    # import_pkgconfig_target(TARGET_NAME libsquashfuse PKGCONFIG_TARGET squashfuse)
- endif()
- 
- 
-@@ -119,7 +119,7 @@
- else()
-     message(STATUS "Using system libarchive")
- 
--    import_find_pkg_target(libarchive LibArchive LibArchive)
-+    # import_find_pkg_target(libarchive LibArchive LibArchive)
- endif()
- 
- 
-Index: src/CMakeLists.txt
++if(USE_CONAN)
++    include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
++    conan_basic_setup(NO_OUTPUT_DIRS)
++endif()
++
+ if(USE_CCACHE)
+     message(STATUS "Using CCache to build AppImageKit dependencies")
+     # TODO: find way to use find_program with all possible paths
+Index: lib/CMakeLists.txt
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- src/CMakeLists.txt	(date 1548079082000)
-+++ src/CMakeLists.txt	(date 1548378139000)
-@@ -3,11 +3,11 @@
+--- lib/CMakeLists.txt	(revision 24302b2fbaa12217eb349de78069cebb4cd3857f)
++++ lib/CMakeLists.txt	(date 1556491724000)
+@@ -3,11 +3,13 @@
+ include(CTest)
  
- find_package(PkgConfig)
+ if(BUILD_TESTING)
+-    if(NOT TARGET gtest)
+-        if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/gtest)
+-            add_subdirectory(gtest EXCLUDE_FROM_ALL)
+-        else()
+-            message(FATAL_ERROR "gtest submodule not found; please call git submodule update --init or disable the unit tests using -DBUILD_TESTING=OFF")
++    if(NOT USE_CONAN)
++        if(NOT TARGET gtest)
++            if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/gtest)
++                add_subdirectory(gtest EXCLUDE_FROM_ALL)
++            else()
++                message(FATAL_ERROR "gtest submodule not found; please call git submodule update --init or disable the unit tests using -DBUILD_TESTING=OFF")
++            endif()
+         endif()
+     endif()
+ endif()
+Index: CMakeLists.txt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- CMakeLists.txt	(revision 24302b2fbaa12217eb349de78069cebb4cd3857f)
++++ CMakeLists.txt	(date 1556491724000)
+@@ -32,6 +32,7 @@
+ option(LIBAPPIMAGE_THUMBNAILER_ENABLED "Enable thumbnailer functions" On)
+ option(LIBAPPIMAGE_STANDALONE "Statically embbed dependencies" Off)
+ option(ENABLE_COVERAGE "Enable tests code coverate target" Off)
++option(USE_CONAN "Use conan to resolve dependencies" Off)
  
--pkg_check_modules(glib glib-2.0>=2.40 IMPORTED_TARGET)
--pkg_check_modules(gobject gobject-2.0>=2.40 IMPORTED_TARGET)
--pkg_check_modules(gio gio-2.0>=2.40 IMPORTED_TARGET)
--pkg_check_modules(zlib zlib IMPORTED_TARGET)
--pkg_check_modules(cairo cairo IMPORTED_TARGET)
-+#pkg_check_modules(glib glib-2.0>=2.40 IMPORTED_TARGET)
-+#pkg_check_modules(gobject gobject-2.0>=2.40 IMPORTED_TARGET)
-+#pkg_check_modules(gio gio-2.0>=2.40 IMPORTED_TARGET)
-+#pkg_check_modules(zlib zlib IMPORTED_TARGET)
-+#pkg_check_modules(cairo cairo IMPORTED_TARGET)
  
- add_subdirectory(xdg-basedir)
- add_subdirectory(libappimage_hashlib)
+ if(ENABLE_COVERAGE)
+Index: tests/libappimage/CMakeLists.txt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- tests/libappimage/CMakeLists.txt	(revision 24302b2fbaa12217eb349de78069cebb4cd3857f)
++++ tests/libappimage/CMakeLists.txt	(date 1556491724000)
+@@ -21,6 +21,6 @@
+ )
+ 
+ target_include_directories(test_libappimage++ PRIVATE "${PROJECT_SOURCE_DIR}/src/libappimage")
+-target_link_libraries(test_libappimage++ libappimage Boost::filesystem libarchive libsquashfuse XdgUtils::DesktopEntry XdgUtils::BaseDir gtest gtest_main)
++target_link_libraries(test_libappimage++ libappimage Boost::filesystem libarchive libsquashfuse XdgUtils::DesktopEntry XdgUtils::BaseDir GTest::GTest GTest::Main)
+ 
+ add_test(test_libappimage++ test_libappimage++)
