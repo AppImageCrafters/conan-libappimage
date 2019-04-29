@@ -7,7 +7,7 @@ if __name__ == "__main__":
                ]
     docker_entry_script = \
         "sudo apt-get -qq update && " \
-        "sudo apt-get -qq install -m -y desktop-file-utils libffi-dev libffi-dev:i386"
+        "sudo apt-get -qq install -m -y desktop-file-utils libffi-dev libglib2.0-dev"
 
     builder = ConanMultiPackager(build_policy="missing", remotes=remotes, docker_entry_script=docker_entry_script)
     builder.add_common_builds(shared_option_name="libappimage:shared")

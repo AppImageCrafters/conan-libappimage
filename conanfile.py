@@ -23,7 +23,7 @@ class LibappimageConan(ConanFile):
         self.requires("libarchive/3.3.3@appimage-conan-community/stable", "private")
         self.requires("xdg-utils-cxx/0.1.1@appimage-conan-community/stable", "private")
         self.requires("cairo/1.15.14@bincrafters/stable")
-        self.requires("glib/2.57.1@bincrafters/stable")
+        # self.requires("glib/2.57.1@bincrafters/stable")
         self.requires("zlib/1.2.11@conan/stable")
         self.requires("boost_filesystem/1.69.0@bincrafters/stable")
         self.requires("boost_algorithm/1.69.0@bincrafters/stable")
@@ -36,7 +36,7 @@ class LibappimageConan(ConanFile):
         self.options["xdg-utils-cxx"].shared = False
         self.options["xdg-utils-cxx"].fPIC = True
         self.options["cairo"].shared = True
-        self.options["glib"].shared = True
+        # self.options["glib"].shared = True
         self.options["zlib"].shared = True
 
     def source(self):
