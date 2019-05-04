@@ -2,14 +2,8 @@ from cpt.packager import ConanMultiPackager
 
 if __name__ == "__main__":
     remotes = [("https://api.bintray.com/conan/bincrafters/public-conan", "yes", "bincrafters"),
-               ("https://api.bintray.com/conan/appimage-conan-community/public-conan", "yes", "appimage"),
-               ("https://api.bintray.com/conan/azubieta/AppImage", "yes", "azubieta"),
-               ]
-    docker_entry_script = \
-        "sudo apt-get -qq update && " \
-        "sudo apt-get -qq install -m -y desktop-file-utils libffi-dev libglib2.0-dev"
-
-    builder = ConanMultiPackager(build_policy="missing", remotes=remotes, docker_entry_script=docker_entry_script)
+               ("https://api.bintray.com/conan/appimage-conan-community/public-conan", "yes", "appimage")]
+    builder = ConanMultiPackager(build_policy="missing", remotes=remotes)
     builder.add_common_builds(shared_option_name="libappimage:shared")
 
     builder.run()

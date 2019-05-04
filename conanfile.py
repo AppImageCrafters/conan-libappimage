@@ -18,6 +18,16 @@ class LibappimageConan(ConanFile):
                       "cmake_installer/3.13.0@conan/stable")
     exports_sources = "patches/*"
 
+    def system_requirements(self):
+        pkgs_name = None
+        if tools.os_info.linux_distro == "ubuntu":
+            pkgs_name = ["desktop-file-utils", "libglib2.0-dev", "libffi-dev"]
+
+        if pkgs_name:
+            installer = tools.SystemPackageTool()
+            for pkg_name in pkgs_name:
+                installer.install(pkg_name)
+
     def requirements(self):
         self.requires("squashfuse/0.1.103@appimage-conan-community/stable", "private")
         self.requires("libarchive/3.3.3@appimage-conan-community/stable", "private")
