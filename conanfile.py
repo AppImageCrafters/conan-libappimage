@@ -4,7 +4,7 @@ import os
 
 class LibappimageConan(ConanFile):
     name = "libappimage"
-    version = "1.0.0"
+    version = "1.0.1"
     license = "[LICENSE]"
     author = "Alexis Lopez Zubieta <contact@azubieta.net>"
     url = "https://github.com/appimage-conan-community/conan-libappimage"
@@ -33,7 +33,6 @@ class LibappimageConan(ConanFile):
         self.requires("libarchive/3.3.3@appimage-conan-community/stable", "private")
         self.requires("xdg-utils-cxx/0.1.1@appimage-conan-community/stable", "private")
         self.requires("cairo/1.15.14@bincrafters/stable")
-        # self.requires("glib/2.57.1@bincrafters/stable")
         self.requires("zlib/1.2.11@conan/stable")
         self.requires("boost_filesystem/1.69.0@bincrafters/stable")
         self.requires("boost_algorithm/1.69.0@bincrafters/stable")
@@ -46,11 +45,11 @@ class LibappimageConan(ConanFile):
         self.options["xdg-utils-cxx"].shared = False
         self.options["xdg-utils-cxx"].fPIC = True
         self.options["cairo"].shared = True
-        # self.options["glib"].shared = True
+        self.options["glib"].shared = True
         self.options["zlib"].shared = True
 
     def source(self):
-        self.run("git clone https://github.com/AppImage/libappimage.git --branch=v1.0.0")
+        self.run("git clone https://github.com/AppImage/libappimage.git --branch=v%s" % self.version)
         tools.patch(base_path="libappimage", patch_file="patches/use_conan.patch")
 
     def build(self):
