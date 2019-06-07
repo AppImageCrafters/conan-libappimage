@@ -1,41 +1,32 @@
-Index: tests/libappimage/desktop_integration/CMakeLists.txt
+Index: tests/libappimage/CMakeLists.txt
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- tests/libappimage/desktop_integration/CMakeLists.txt	(revision 24302b2fbaa12217eb349de78069cebb4cd3857f)
-+++ tests/libappimage/desktop_integration/CMakeLists.txt	(date 1556491724000)
-@@ -38,8 +38,11 @@
-     # statically once glib is loaded.
-     PRIVATE libglib
-     PUBLIC dl
--    PRIVATE gtest
--    PRIVATE gtest_main
-+    PRIVATE GTest::GTest
-+    PRIVATE GTest::Main
+--- tests/libappimage/CMakeLists.txt	(revision 0dd6cf369a4bc066ea2dff6bc5795a948a4b9364)
++++ tests/libappimage/CMakeLists.txt	(date 1559878340000)
+@@ -21,6 +21,6 @@
  )
-+
-+get_target_property(GTEST_PROP GTest::GTest INTERFACE_LINK_LIBRARIES)
-+MESSAGE("GTEST_PROP  ${GTEST_PROP}")
  
- add_test(TestDesktopIntegration TestDesktopIntegration)
+ target_include_directories(test_libappimage++ PRIVATE "${PROJECT_SOURCE_DIR}/src/libappimage")
+-target_link_libraries(test_libappimage++ libappimage Boost::filesystem libarchive libsquashfuse XdgUtils::DesktopEntry XdgUtils::BaseDir gtest gtest_main)
++target_link_libraries(test_libappimage++ libappimage Boost::filesystem libarchive libsquashfuse XdgUtils::DesktopEntry XdgUtils::BaseDir GTest::GTest GTest::Main)
+ 
+ add_test(test_libappimage++ test_libappimage++)
 Index: tests/libappimage/legacy/CMakeLists.txt
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- tests/libappimage/legacy/CMakeLists.txt	(revision 24302b2fbaa12217eb349de78069cebb4cd3857f)
-+++ tests/libappimage/legacy/CMakeLists.txt	(date 1556491724000)
-@@ -1,12 +1,12 @@
+--- tests/libappimage/legacy/CMakeLists.txt	(revision 0dd6cf369a4bc066ea2dff6bc5795a948a4b9364)
++++ tests/libappimage/legacy/CMakeLists.txt	(date 1559878340000)
+@@ -1,9 +1,9 @@
  add_library(fixtures INTERFACE)
  target_sources(fixtures INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/fixtures.h)
 -set_property(TARGET fixtures PROPERTY INTERFACE_LINK_LIBRARIES xdg-basedir gtest)
 +set_property(TARGET fixtures PROPERTY INTERFACE_LINK_LIBRARIES xdg-basedir GTest::GTest)
  
  add_executable(test_libappimage test_libappimage.cpp)
- if(LIBAPPIMAGE_THUMBNAILER_ENABLED)
-     target_compile_definitions(test_libappimage PRIVATE -DLIBAPPIMAGE_THUMBNAILER_ENABLED)
- endif()
 -target_link_libraries(test_libappimage fixtures libappimage libsquashfuse libglib libgobject gtest gtest_main)
 +target_link_libraries(test_libappimage fixtures libappimage libsquashfuse libglib libgobject GTest::GTest GTest::Main)
  add_test(test_libappimage test_libappimage)
@@ -46,8 +37,8 @@ IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- tests/CMakeLists.txt	(revision 24302b2fbaa12217eb349de78069cebb4cd3857f)
-+++ tests/CMakeLists.txt	(date 1556491724000)
+--- tests/CMakeLists.txt	(revision 0dd6cf369a4bc066ea2dff6bc5795a948a4b9364)
++++ tests/CMakeLists.txt	(date 1559878340000)
 @@ -3,6 +3,9 @@
  if(BUILD_TESTING)
      cmake_minimum_required(VERSION 3.5)
@@ -63,8 +54,8 @@ IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- cmake/dependencies.cmake	(revision 24302b2fbaa12217eb349de78069cebb4cd3857f)
-+++ cmake/dependencies.cmake	(date 1556491724000)
+--- cmake/dependencies.cmake	(revision 0dd6cf369a4bc066ea2dff6bc5795a948a4b9364)
++++ cmake/dependencies.cmake	(date 1559878340000)
 @@ -6,6 +6,11 @@
  # imported dependencies
  include(${CMAKE_CURRENT_LIST_DIR}/imported_dependencies.cmake)
@@ -82,8 +73,8 @@ IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- lib/CMakeLists.txt	(revision 24302b2fbaa12217eb349de78069cebb4cd3857f)
-+++ lib/CMakeLists.txt	(date 1556491724000)
+--- lib/CMakeLists.txt	(revision 0dd6cf369a4bc066ea2dff6bc5795a948a4b9364)
++++ lib/CMakeLists.txt	(date 1559878340000)
 @@ -3,11 +3,13 @@
  include(CTest)
  
@@ -103,13 +94,36 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
          endif()
      endif()
  endif()
+Index: tests/libappimage/desktop_integration/CMakeLists.txt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- tests/libappimage/desktop_integration/CMakeLists.txt	(revision 0dd6cf369a4bc066ea2dff6bc5795a948a4b9364)
++++ tests/libappimage/desktop_integration/CMakeLists.txt	(date 1559878340000)
+@@ -39,10 +39,13 @@
+     # statically once glib is loaded.
+     PRIVATE libglib
+     PUBLIC dl
+-    PRIVATE gtest
+-    PRIVATE gtest_main
++    PRIVATE GTest::GTest
++    PRIVATE GTest::Main
+     PRIVATE librsvg
+     PRIVATE libcairo
+ )
+ 
++get_target_property(GTEST_PROP GTest::GTest INTERFACE_LINK_LIBRARIES)
++MESSAGE("GTEST_PROP  ${GTEST_PROP}")
++
+ add_test(TestDesktopIntegration TestDesktopIntegration)
 Index: CMakeLists.txt
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- CMakeLists.txt	(revision 24302b2fbaa12217eb349de78069cebb4cd3857f)
-+++ CMakeLists.txt	(date 1556491724000)
+--- CMakeLists.txt	(revision 0dd6cf369a4bc066ea2dff6bc5795a948a4b9364)
++++ CMakeLists.txt	(date 1559878340000)
 @@ -32,6 +32,7 @@
  option(LIBAPPIMAGE_THUMBNAILER_ENABLED "Enable thumbnailer functions" On)
  option(LIBAPPIMAGE_STANDALONE "Statically embbed dependencies" Off)
@@ -118,18 +132,3 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
  
  
  if(ENABLE_COVERAGE)
-Index: tests/libappimage/CMakeLists.txt
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- tests/libappimage/CMakeLists.txt	(revision 24302b2fbaa12217eb349de78069cebb4cd3857f)
-+++ tests/libappimage/CMakeLists.txt	(date 1556491724000)
-@@ -21,6 +21,6 @@
- )
- 
- target_include_directories(test_libappimage++ PRIVATE "${PROJECT_SOURCE_DIR}/src/libappimage")
--target_link_libraries(test_libappimage++ libappimage Boost::filesystem libarchive libsquashfuse XdgUtils::DesktopEntry XdgUtils::BaseDir gtest gtest_main)
-+target_link_libraries(test_libappimage++ libappimage Boost::filesystem libarchive libsquashfuse XdgUtils::DesktopEntry XdgUtils::BaseDir GTest::GTest GTest::Main)
- 
- add_test(test_libappimage++ test_libappimage++)
