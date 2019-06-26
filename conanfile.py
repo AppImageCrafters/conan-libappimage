@@ -22,7 +22,7 @@ class LibappimageConan(ConanFile):
     def system_requirements(self):
         pkgs_name = None
         if tools.os_info.linux_distro == "ubuntu":
-            pkgs_name = ["desktop-file-utils", "libglib2.0-dev", "libffi-dev"]
+            pkgs_name = ["desktop-file-utils", "libffi-dev", "gtk-doc-tools"]
 
         if pkgs_name:
             installer = tools.SystemPackageTool()

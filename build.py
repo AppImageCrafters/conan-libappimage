@@ -5,8 +5,7 @@ if __name__ == "__main__":
                ("https://api.bintray.com/conan/conan-community/conan", "yes", "conan-community"),
                ("https://api.bintray.com/conan/appimage-conan-community/public-conan", "yes", "appimage")]
 
-    command = "sudo apt-get -qq update && sudo apt-get -qq install -y librsvg2-dev gtk-doc-tools"
-    builder = ConanMultiPackager(build_policy="missing", remotes=remotes, docker_entry_script=command)
+    builder = ConanMultiPackager(build_policy="missing", remotes=remotes)
     builder.add_common_builds(shared_option_name="libappimage:shared")
 
     builder.run()
