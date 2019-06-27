@@ -50,6 +50,7 @@ class LibappimageConan(ConanFile):
         self.options["librsvg"].shared = True
         self.options["glib"].shared = True
         self.options["zlib"].shared = True
+        self.options["fontconfig"].shared = True
 
     def source(self):
         self.run("git clone https://github.com/AppImage/libappimage.git --branch=v%s" % self.version)
