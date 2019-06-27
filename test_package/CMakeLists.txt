@@ -14,5 +14,4 @@ target_link_libraries(example
     PkgConfig::GDK_PIXBUF
     PkgConfig::LIBFFI
     libappimage
-    /home/alexis/.conan/data/pango/1.40.6/appimage-conan-community/stable/package/895131bfd7eae5165d8af2e12c70955d1a460af0/lib/libpango-1.0.so
     )
