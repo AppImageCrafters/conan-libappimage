@@ -6,7 +6,7 @@ from conans import ConanFile, CMake, tools
 class LibappimageTestConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     build_requires = "cmake_installer/3.13.0@conan/stable"
-    generators = ("cmake_paths")
+    generators = ("cmake_paths", "pkg_config")
 
     def import_pkg_config_files(self, pkg, pkgconfig_path):
         for root, dirs, files in os.walk(self.deps_cpp_info[pkg].rootpath):
